@@ -1,0 +1,56 @@
+<div class="container mt-5">
+
+  <h2>Task Dashboard</h2>
+
+  <form (ngSubmit)="addTask()">
+
+    <input
+      type="text"
+      class="form-control mb-3"
+      placeholder="Enter Task"
+      [(ngModel)]="taskData.title"
+      name="title"
+    >
+
+    <button class="btn btn-primary">
+      {{ editMode ? 'Update Task' : 'Add Task' }}
+    </button>
+
+  </form>
+
+  <hr>
+
+  <div
+    class="card p-3 mb-3"
+    *ngFor="let task of tasks"
+  >
+
+    <h5>{{ task.title }}</h5>
+
+    <p>
+      Status:
+      {{ task.completed ? 'Completed' : 'Pending' }}
+    </p>
+
+    <button
+      class="btn btn-warning me-2"
+      (click)="editTask(task)"
+    >
+      Edit
+    </button>
+
+    <button
+      class="btn btn-danger"
+      (click)="deleteTask(task._id)"
+    >
+      Delete
+    </button>
+<!-- 
+      <button (click)="markCompleted(task._id)">
+         Complete
+     </button> -->
+
+  </div>
+
+</div>
+

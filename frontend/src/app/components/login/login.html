@@ -1,0 +1,32 @@
+<div class="container mt-5">
+  <h2>Login</h2>
+
+  <form (ngSubmit)="login()">
+
+    <input
+      type="email"
+      class="form-control mb-3"
+      placeholder="Email"
+      [(ngModel)]="user.email"
+      name="email"
+    >
+
+    <input
+      type="password"
+      class="form-control mb-3"
+      placeholder="Password"
+      [(ngModel)]="user.password"
+      name="password"
+    >
+
+    <button class="btn btn-success">
+      Login
+    </button>
+    <br>
+    <br>
+    <button class="btn btn-success" (click)="register()">
+      Register Here
+    </button>
+
+  </form>
+</div>
