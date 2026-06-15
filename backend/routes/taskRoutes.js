@@ -20,7 +20,7 @@ router.post("/", auth, async (req, res) => {
 
   const task = new Task({
     user: req.user.id,
-    title: req.body.title
+    ...req.body
   });
 
   await task.save();
@@ -29,25 +29,14 @@ router.post("/", auth, async (req, res) => {
 
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.patch("/:id/complete", auth, async (req, res) => {
 
-  const task = await Task.findById(req.params.id);
-
-  if (!task) {
-    return res.status(404).json({
-      message: "Task not found"
-    });
-  }
-
-  task.title = req.body.title || task.title;
-
-  task.completed =
-    req.body.completed ?? task.completed;
-
-  await task.save();
-
-  res.json(task);
-
+  const task = await Task.findByIdAndUpdate(
+    req.params.id,
+     {"completed": true}, 
+     { returnDocument: "after" }
+);
+res.json(task);
 });
 
 router.delete("/:id", auth, async (req, res) => {
@@ -60,14 +49,28 @@ router.delete("/:id", auth, async (req, res) => {
 
 });
 
-router.put('/:id', async (req, res) => {
+ router.put('/:id', auth, async (req, res) => {
 
   try {
+
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Task not found'
+      });
+    }
+
+    if (task.completed) {
+      return res.status(400).json({
+        message: 'Completed tasks cannot be edited'
+      });
+    }
 
     const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     res.json(updatedTask);

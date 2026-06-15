@@ -1,29 +1,70 @@
 <div class="container mt-5">
 
   <h2>Task Dashboard</h2>
+  <button type="button" class="btn btn-secondary mb-3" (click)="logout()">
+    Logout
+  </button>
+  <div class="row mb-4">
+
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h5>Total Tasks</h5>
+        <h2>{{ TotalTasks }}</h2>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h5>Completed</h5>
+        <h2>{{ CompletedTasks }}</h2>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h5>Pending</h5>
+        <h2>{{ PendingTasks }}</h2>
+      </div>
+    </div>
+
+  </div>
 
   <form (ngSubmit)="addTask()">
 
-    <input
-      type="text"
-      class="form-control mb-3"
-      placeholder="Enter Task"
-      [(ngModel)]="taskData.title"
-      name="title"
-    >
+    <input type="text" class="form-control mb-3" placeholder="Enter Task" [(ngModel)]="taskData.title" name="title">
+    <select class="form-select mb-3" [(ngModel)]="taskData.priority" name="priority">
 
-    <button class="btn btn-primary">
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+
+    </select>
+    <input type="date" class="form-control mb-3" [(ngModel)]="taskData.dueDate" name="dueDate">
+
+    <button type="submit" class="btn btn-primary" [disabled]="!taskData.title.trim()">
       {{ editMode ? 'Update Task' : 'Add Task' }}
     </button>
 
   </form>
 
   <hr>
+  <div class="mb-3">
 
-  <div
-    class="card p-3 mb-3"
-    *ngFor="let task of tasks"
-  >
+    <button class="btn btn-secondary me-2" (click)="filterType='all'">
+      All
+    </button>
+
+    <button class="btn btn-success me-2" (click)="filterType='completed'">
+      Completed
+    </button>
+
+    <button class="btn btn-warning" (click)="filterType='pending'">
+      Pending
+    </button>
+
+  </div>
+  <input type="text" class="form-control mb-3" placeholder="Search Task" [(ngModel)]="searchText">
+  <div class="card p-3 mb-3" *ngFor="let task of filteredTasks">
 
     <h5>{{ task.title }}</h5>
 
@@ -31,26 +72,28 @@
       Status:
       {{ task.completed ? 'Completed' : 'Pending' }}
     </p>
+    <p>
+      Priority:
+      {{ task.priority }}
+    </p>
+    <p>
+      Due:
+      {{ task.dueDate | date:'dd/MM/yyyy' }}
+    </p>
 
-    <button
-      class="btn btn-warning me-2"
-      (click)="editTask(task)"
-    >
+    <button *ngIf="!task.completed" type="button" class="btn btn-warning me-2" (click)="editTask(task)">
       Edit
     </button>
 
-    <button
-      class="btn btn-danger"
-      (click)="deleteTask(task._id)"
-    >
+    <button type="button" class="btn btn-danger" (click)="deleteTask(task._id)">
       Delete
     </button>
-<!-- 
-      <button (click)="markCompleted(task._id)">
-         Complete
-     </button> -->
+
+    <button type="button" (click)="markCompleted(task._id)" *ngIf="!task.completed">
+      Complete
+    </button>
 
   </div>
 
-</div>
 
+</div>

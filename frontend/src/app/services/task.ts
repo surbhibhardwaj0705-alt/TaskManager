@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Injectable({
@@ -10,16 +12,22 @@ export class Task {
 
   private apiUrl ="http://localhost:5000/api/tasks";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   
   getHeaders(){
-    return {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      })
-    };
+     const token =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('token')
+      : '';
+   console.log('Token:', localStorage.getItem('token'));
+
+  return {
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    })
   };
+}
 
   getTasks(): Observable<any> {
     return this.http.get(this.apiUrl, this.getHeaders());
